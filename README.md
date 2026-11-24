@@ -1,21 +1,31 @@
-# Dynamic Portfolio — 3 Pages + Node Backend
+# Dynamic Portfolio — React + Vite Frontend, Node Backend
 
-A modern, dark, responsive portfolio with **zero hardcoded content in the frontend**.
-Everything (profile, skills, projects) is served by a Node/Express API.
+A modern, dark, responsive portfolio. The frontend is **React 18 + Vite**
+with React Router (3 routes), and **zero hardcoded content** — everything
+(profile, skills, projects) is served by a Node/Express API.
 
-## Pages
-| Page | File | Data source |
+## Pages (React Router)
+| Route | Page | Data source |
 |---|---|---|
-| Home | `frontend/index.html` | `GET /api/profile`, `/api/skills`, `/api/projects?featured=true` |
-| Projects | `frontend/projects.html` | `GET /api/projects` (with category filter) |
-| Contact | `frontend/contact.html` | `POST /api/contact` |
+| `/` | Home | `GET /api/profile`, `/api/skills`, `/api/projects?featured=true` |
+| `/projects` | Projects | `GET /api/projects` (with category filter) |
+| `/contact` | Contact | `POST /api/contact` |
 
 ## Run locally
 ```bash
+# 1. Backend (API + serves the built frontend) — http://localhost:3000
 cd backend
 npm install
 npm start
-# open http://localhost:3000
+
+# 2. Frontend dev server with hot reload + /api proxy — http://localhost:5173
+cd frontend
+npm install
+npm run dev
+
+# Build the frontend for production (output: frontend/dist/)
+cd frontend
+npm run build
 ```
 
 ## API
@@ -33,10 +43,12 @@ projects and social links. No frontend change needed, the pages re-render
 from the API on next load.
 
 ## Deploy
-- Backend + frontend together: deploy `backend/` to Render / Railway / Fly.io
-  (it serves the static frontend itself). Set `PORT` from the host.
-- Frontend only (GitHub Pages / Netlify): deploy `frontend/` and point the
-  `fetch()` calls in `frontend/js/app.js` at your hosted API URL.
+- Backend + built frontend together: deploy `backend/` to Render / Railway /
+  Fly.io (it serves `frontend/dist/` itself). Run `npm run build` in
+  `frontend/` first, or add it as the build step. Set `PORT` from the host.
+- Frontend only (Netlify / Vercel): deploy `frontend/` and point the
+  `fetch()` calls in `frontend/src/api.js` at your hosted API URL.
 
 ## Stack
-Node.js 20+, Express, vanilla JS, no build step.
+React 18, Vite 5, React Router 6, Node.js 20+, Express. No backend change
+was needed for the React migration — the API contract is unchanged.

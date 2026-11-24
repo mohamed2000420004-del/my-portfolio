@@ -11,8 +11,12 @@ const MESSAGES_FILE = path.join(__dirname, 'data', 'messages.json');
 app.use(cors());
 app.use(express.json());
 
-// Serve the frontend (3 pages) from ../frontend
-app.use(express.static(path.join(__dirname, '..', 'frontend')));
+// Serve the React frontend: the Vite build output (frontend/dist) when built,
+// otherwise the frontend source folder (dev fallback).
+const FRONTEND_DIR = fs.existsSync(path.join(__dirname, '..', 'frontend', 'dist'))
+  ? path.join(__dirname, '..', 'frontend', 'dist')
+  : path.join(__dirname, '..', 'frontend');
+app.use(express.static(FRONTEND_DIR));
 
 function loadData() {
   return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
@@ -83,10 +87,10 @@ app.get('/api/messages', (req, res) => {
   res.json(JSON.parse(fs.readFileSync(MESSAGES_FILE, 'utf8')));
 });
 
-// SPA-style fallback: unknown non-API routes go to the home page
+// SPA fallback: unknown non-API routes (/, /projects, /contact) go to React.
 app.get('*', (req, res) => {
   if (req.path.startsWith('/api/')) return res.status(404).json({ error: 'Not found' });
-  res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
+  res.sendFile(path.join(FRONTEND_DIR, 'index.html'));
 });
 
 app.listen(PORT, () => {
