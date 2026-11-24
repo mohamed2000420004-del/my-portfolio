@@ -1,0 +1,1 @@
+{"dependencies":{"cors":"^2.8.5","express":"^4.21.2"},"description":"Dynamic portfolio backend — all portfolio content is served from this Node/Express API, the frontend only renders what the API returns.","main":"server.js","name":"portfolio-backend","scripts":{"dev":"node --watch server.js","start":"node server.js"},"version":"1.0.0"}
